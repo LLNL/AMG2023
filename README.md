@@ -23,13 +23,14 @@ https://github.com/hypre-space/hypre .
 
 Then modify the 'Makefile' file appropriately.
 
-then type 
+Then type 
 
   make
 
 Other available targets are
 
   make clean        (deletes .o files)
+
   make veryclean    (deletes .o files, libraries, and executables)
 
 Further information is available in the 'amg-doc' file.
