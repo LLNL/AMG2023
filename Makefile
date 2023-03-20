@@ -26,10 +26,14 @@ LDFLAGS =
 
 INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE}
 
+##################################################################
+## Set path to hypre installation
+##################################################################
 HYPRE_DIR = /g/g20/ulrikey/hypre-2.27.0/hypre/src/hypre
 
 ##################################################################
-##  MPI options
+##  MPI options - this is needed for Crusher, Tioga, RZVernal, 
+##    when using AMD GPUs, might not be needed for other computers
 ##################################################################
 #MPIPATH = /opt/cray/pe/mpich/8.1.21/ofi/crayclang/10.0
 #MPIINCLUDE =  -I${MPIPATH}/include
@@ -38,14 +42,14 @@ HYPRE_DIR = /g/g20/ulrikey/hypre-2.27.0/hypre/src/hypre
 #MPIFLAGS   =
 
 ########################################################################
-# CUDA options
+# CUDA options - set correct paths depending on cuda package
 ########################################################################
 HYPRE_CUDA_PATH    = #/usr/tce/packages/cuda/cuda-10.1.243
 HYPRE_CUDA_INCLUDE = #-I${HYPRE_CUDA_PATH}/include
 HYPRE_CUDA_LIBS    = #-L${HYPRE_CUDA_PATH}/lib64 -lcudart -lcusparse -lcublas -lcurand
 
 ########################################################################
-# HIP options
+# HIP options set correct path depending on rocm version
 ########################################################################
 HYPRE_HIP_PATH    = /opt/rocm-5.4.1
 HYPRE_HIP_INCLUDE = -I${HYPRE_HIP_PATH}/include
