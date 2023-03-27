@@ -12,7 +12,7 @@ Parallelism is achieved by data decomposition, which is here achieved by simply 
 the grid into logical P x Q x R (in 3D) chunks of equal size.
 It can also be used on NVIDIA, AMD, and Intel GPUs via CUDA, HIP, and SYCL.
 
-For more information, see the 'amg-doc' file in the distribution.
+AMG2023 is distributed under the terms of both the MIT license and the Apache License (Version 2.0). 
 
 
 # Building the Code
@@ -36,3 +36,10 @@ Other available targets are
   make veryclean    (deletes .o files, libraries, and executables)
 
 Further information is available in the 'amg-doc' file.
+
+
+# Additional Information
+
+For more information, see the 'amg-doc' file in the distribution.
+
+LLNL-CODE-846758
