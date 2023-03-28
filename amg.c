@@ -526,7 +526,7 @@ main( hypre_int argc,
          hypre_printf("\n");
          hypre_printf ("\nFOM_Solve: nnz_AP * iterations / Solve Phase Time: %e\n\n", FOM2);
          FOM1 = 0.5 * (FOM1 + FOM2);
-         hypre_printf ("\n\nFigure of Merit (FOM_1): %e\n\n", FOM1);
+         hypre_printf ("\n\nFigure of Merit (FOM): %e\n\n", FOM1);
       }
 
    }
@@ -630,7 +630,7 @@ main( hypre_int argc,
          hypre_printf("\n");
          hypre_printf ("\nFOM_Solve: nnz_AP * iterations / Solve Phase Time: %e\n\n", FOM2);
          FOM1 = 0.5 * (FOM1 + FOM2);
-         hypre_printf ("\n\nFigure of Merit (FOM_1): %e\n\n", FOM1);
+         hypre_printf ("\n\nFigure of Merit (FOM): %e\n\n", FOM1);
       }
    }
 
