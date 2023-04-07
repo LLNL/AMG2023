@@ -89,6 +89,7 @@ main( hypre_int argc,
    HYPRE_Int           myid = 0;
    HYPRE_Int           num_procs = 1;
    HYPRE_Int           agg_num_levels = 1;
+   HYPRE_Int           agg_interp_type = 8;
 
    HYPRE_Int           time_index;
    MPI_Comm            comm = hypre_MPI_COMM_WORLD;
@@ -454,6 +455,7 @@ main( hypre_int argc,
       if (relax_type > -1) { HYPRE_BoomerAMGSetRelaxType(pcg_precond, relax_type); }
       HYPRE_BoomerAMGSetDebugFlag(pcg_precond, debug_flag);
       HYPRE_BoomerAMGSetAggNumLevels(pcg_precond, agg_num_levels);
+      HYPRE_BoomerAMGSetAggInterpType(pcg_precond, agg_interp_type);
       HYPRE_BoomerAMGSetRAP2(pcg_precond, rap2);
       HYPRE_BoomerAMGSetKeepTranspose(pcg_precond, keepTranspose);
       HYPRE_BoomerAMGSetCumNnzAP(pcg_precond, cum_nnz_AP);
