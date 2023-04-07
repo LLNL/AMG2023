@@ -89,7 +89,7 @@ main( hypre_int argc,
    HYPRE_Int           myid = 0;
    HYPRE_Int           num_procs = 1;
    HYPRE_Int           agg_num_levels = 1;
-   HYPRE_Int           agg_interp_type = 8;
+   HYPRE_Int           agg_interp_type = 4;
 
    HYPRE_Int           time_index;
    MPI_Comm            comm = hypre_MPI_COMM_WORLD;
