@@ -21,15 +21,19 @@ LINK_CXX  = ${CXX}
 AR	= ar -rcu
 RANLIB  = ranlib
 
-LDFLAGS =
+CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
+CALIPER_LIBS = -L$(CALIPER_PATH)/lib64 -lcaliper
+CALIPER_INCLUDE = -I$(CALIPER_PATH)/include/caliper
+
+LDFLAGS = $(CALIPER_LIBS)
 #LIBS    = -lm ${HYPRE_CUDA_LIBS} ${HYPRE_HIP_LIBS}
 
-INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE}
+INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE} $(CALIPER_INCLUDE)
 
 ##################################################################
 ## Set path to hypre installation
 ##################################################################
-HYPRE_DIR = /g/g20/ulrikey/hypre-2.27.0/hypre/src/hypre
+HYPRE_DIR = /g/g15/jeter3/hypre/src/hypre
 
 ##################################################################
 ##  MPI options - this is needed for Crusher, Tioga, RZVernal, 
@@ -53,7 +57,7 @@ HYPRE_CUDA_LIBS    = #-L${HYPRE_CUDA_PATH}/lib64 -lcudart -lcusparse -lcublas -l
 ########################################################################
 HYPRE_HIP_PATH    = /opt/rocm-5.4.1
 HYPRE_HIP_INCLUDE = -I${HYPRE_HIP_PATH}/include
-HYPRE_HIP_LIBS    = -L${HYPRE_HIP_PATH}/lib -lamdhip64 -lrocsparse -lrocrand
+#HYPRE_HIP_LIBS    = -L${HYPRE_HIP_PATH}/lib -lamdhip64 -lrocsparse -lrocrand
 
 ########################################################################
 # Compiling and linking options
@@ -84,7 +88,7 @@ CXXINCLUDES = $(CINCLUDES) -I..
 CXXDEFS = $(CDEFS)
 CXXFLAGS  = $(COPTS) $(CINCLUDES) $(CDEFS) 
 
-LIBS = -L$(HYPRE_DIR)/lib -lHYPRE $(XLINK) ${MPILIBS} -lm $(HYPRE_CUDA_LIBS) $(HYPRE_HIP_LIBS)
+LIBS = -L$(HYPRE_DIR)/lib -lHYPRE $(XLINK) ${MPILIBS} -lm $(HYPRE_CUDA_LIBS) $(HYPRE_HIP_LIBS) $(CALIPER_LIBS)
 #LIBS = -L$(HYPRE_DIR)/lib -lHYPRE $(XLINK) ${MPILIBS} $(HYPRE_HIP_LIBS)
 #LFLAGS = $(LINKOPTS) $(LIBS) -lstdc++
 

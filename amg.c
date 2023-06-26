@@ -41,6 +41,12 @@
 
 #include <time.h>
 
+/*********** Added Caliper headers ***********/
+# include <cali.h>
+# include <cali-manager.h>
+# include <cali_datatracker.h>
+# include <cali-mpi.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -58,10 +64,13 @@ HYPRE_BigInt hypre_map27( HYPRE_BigInt  ix, HYPRE_BigInt  iy, HYPRE_BigInt  iz, 
 #endif
 #define SECOND_TIME 0
 
+
 hypre_int
 main( hypre_int argc,
       char *argv[] )
 {
+   CALI_MARK_BEGIN("main");
+   //CALI_MARK_BEGIN("setup");
    HYPRE_Int           arg_index;
    HYPRE_Int           print_usage;
    HYPRE_Int           problem_id;
@@ -160,7 +169,7 @@ main( hypre_int argc,
    /*-----------------------------------------------------------
     * Initialize MPI
     *-----------------------------------------------------------*/
-
+   
    hypre_MPI_Init(&argc, &argv);
 
    hypre_MPI_Comm_size(comm, &num_procs );
@@ -316,6 +325,7 @@ main( hypre_int argc,
    /*-----------------------------------------------------------
     * Initialize : must be the first HYPRE function to call
     *-----------------------------------------------------------*/
+   //CALI_MARK_BEGIN("hypre-setup");
    HYPRE_Init();
 
    hypre_EndTiming(time_index);
@@ -333,22 +343,27 @@ main( hypre_int argc,
    HYPRE_SetSpMVUseVendor(spmv_use_vendor);
    HYPRE_SetSpGemmUseVendor(spgemm_use_vendor);
 #endif
+   //CALI_MARK_END("hypre-setup");
 
    /*-----------------------------------------------------------
     * Set up matrix
     *-----------------------------------------------------------*/
-
+   //CALI_MARK_BEGIN("matrix-setup");
    time_index = hypre_InitializeTiming("Spatial Operator");
    hypre_BeginTiming(time_index);
 
    if (problem_id == 1)
    {
+      //CALI_MARK_BEGIN("problemID1");
       BuildIJLaplacian27pt(argc, argv, &system_size, &ij_A, memory_location);
+      //CALI_MARK_END("problemID1");
    }
    else
    {
+      //CALI_MARK_BEGIN("problemID1-else");
       BuildIJLaplacian7pt(argc, argv, &system_size, &ij_A, memory_location);
       tol = 1.e-8;
+      //CALI_MARK_END("problemID1-else");
    }
 
    HYPRE_IJMatrixGetObject(ij_A, &object);
@@ -358,11 +373,12 @@ main( hypre_int argc,
    hypre_GetTiming("Generate Matrix", &wall_time, comm);
    hypre_FinalizeTiming(time_index);
    hypre_ClearTiming();
+   //CALI_MARK_END("matrix-setup");
 
    /*-----------------------------------------------------------
     * Set up the RHS and initial guess
     *-----------------------------------------------------------*/
-
+   //CALI_MARK_BEGIN("rhs-initial-guess");
    time_index = hypre_InitializeTiming("RHS and Initial Guess");
    hypre_BeginTiming(time_index);
 
@@ -374,8 +390,10 @@ main( hypre_int argc,
 
    if (myid == 0)
    {
+      //CALI_MARK_BEGIN("myID0");
       hypre_printf("  RHS vector has unit components\n");
       hypre_printf("  Initial guess is 0\n");
+      //CALI_MARK_END("myID0");
    }
 
    /* RHS */
@@ -412,15 +430,20 @@ main( hypre_int argc,
    hypre_FinalizeTiming(time_index);
    hypre_ClearTiming();
 
+   //CALI_MARK_END("rhs-initial-guess");
+   //CALI_MARK_END("setup");
+
    /*-----------------------------------------------------------
     * Print out the system and initial guess
     *-----------------------------------------------------------*/
 
    if (print_system)
    {
+      //CALI_MARK_BEGIN("system-initial-guess");
       HYPRE_IJMatrixPrint(ij_A, "IJ.out.A");
       HYPRE_IJVectorPrint(ij_b, "IJ.out.b");
       HYPRE_IJVectorPrint(ij_x, "IJ.out.x0");
+      //CALI_MARK_END("system-initial-guess");
 
    }
 
@@ -431,6 +454,7 @@ main( hypre_int argc,
 
    if (problem_id == 2 )
    {
+      CALI_MARK_BEGIN("problem2");
       time_index = hypre_InitializeTiming("PCG Setup");
       hypre_MPI_Barrier(comm);
       hypre_BeginTiming(time_index);
@@ -443,7 +467,12 @@ main( hypre_int argc,
       HYPRE_PCGSetAbsoluteTol(pcg_solver, atol);
 
       /* use BoomerAMG as preconditioner */
-      if (myid == 0 && print_stats) { hypre_printf("Solver: AMG-PCG\n"); }
+      if (myid == 0 && print_stats) 
+      { 
+	      //CALI_MARK_BEGIN("BoomerAMG");
+	      hypre_printf("Solver: AMG-PCG\n");
+	      //CALI_MARK_END("BoomerAMG"); 
+      }
       HYPRE_BoomerAMGCreate(&pcg_precond);
       HYPRE_BoomerAMGSetTol(pcg_precond, pc_tol);
       HYPRE_BoomerAMGSetCoarsenType(pcg_precond, coarsen_type);
@@ -452,7 +481,12 @@ main( hypre_int argc,
       HYPRE_BoomerAMGSetPrintLevel(pcg_precond, poutdat);
       HYPRE_BoomerAMGSetMaxIter(pcg_precond, 1);
       HYPRE_BoomerAMGSetNumSweeps(pcg_precond, num_sweeps);
-      if (relax_type > -1) { HYPRE_BoomerAMGSetRelaxType(pcg_precond, relax_type); }
+      if (relax_type > -1) 
+      { 
+	      //CALI_MARK_BEGIN("relax-type");
+	      HYPRE_BoomerAMGSetRelaxType(pcg_precond, relax_type);
+	      //CALI_MARK_END("relax-type"); 
+      }
       HYPRE_BoomerAMGSetDebugFlag(pcg_precond, debug_flag);
       HYPRE_BoomerAMGSetAggNumLevels(pcg_precond, agg_num_levels);
       HYPRE_BoomerAMGSetAggInterpType(pcg_precond, agg_interp_type);
@@ -469,12 +503,16 @@ main( hypre_int argc,
       HYPRE_PCGGetPrecond(pcg_solver, &pcg_precond_gotten);
       if (pcg_precond_gotten !=  pcg_precond)
       {
+	 //CALI_MARK_BEGIN("bad-precond");
          hypre_printf("HYPRE_ParCSRPCGGetPrecond got bad precond\n");
+	 //CALI_MARK_END("bad-precond");
          return (-1);
       }
       else if (myid == 0 && print_stats)
       {
+	 //CALI_MARK_BEGIN("good-precond");
          hypre_printf("HYPRE_ParCSRPCGGetPrecond got good precond\n");
+	 //CALI_MARK_END("good-precond");
       }
 
       HYPRE_PCGSetup(pcg_solver, (HYPRE_Matrix)parcsr_A,
@@ -488,12 +526,14 @@ main( hypre_int argc,
       fflush(NULL);
 
       HYPRE_BoomerAMGGetCumNnzAP(pcg_precond, &cum_nnz_AP);
-
       FOM1 = cum_nnz_AP / wall_time;
 
       if (myid == 0)
       {
+	 //CALI_MARK_BEGIN("FOM1-setup");
+	 cali_set_global_double_byname("P2Setup-FOM", FOM1);
          hypre_printf ("\nFOM_Setup: nnz_AP / Setup Phase Time: %e\n\n", FOM1);
+	 //CALI_MARK_END("FOM1-setup");
       }
 
       time_index = hypre_InitializeTiming("PCG Solve");
@@ -517,20 +557,24 @@ main( hypre_int argc,
       HYPRE_BoomerAMGDestroy(pcg_precond);
 
       HYPRE_ParCSRPCGDestroy(pcg_solver);
-
+      
       FOM2 = cum_nnz_AP * (HYPRE_Real)num_iterations / wall_time;
 
       if (myid == 0)
       {
+	 //CALI_MARK_BEGIN("Problem2-FOM");
          hypre_printf("\n");
          hypre_printf("Iterations = %d\n", num_iterations);
          hypre_printf("Final Relative Residual Norm = %e\n", final_res_norm);
          hypre_printf("\n");
+         cali_set_global_double_byname("P2-Solve-FOM", FOM2);
          hypre_printf ("\nFOM_Solve: nnz_AP * iterations / Solve Phase Time: %e\n\n", FOM2);
          FOM1 = 0.5 * (FOM1 + FOM2);
+         cali_set_global_double_byname("P2-FOM", FOM1);
          hypre_printf ("\n\nFigure of Merit (FOM): %e\n\n", FOM1);
+	 //CALI_MARK_END("Prolbem2-FOM");
       }
-
+      CALI_MARK_END("problem2");
    }
 
    /*-----------------------------------------------------------
@@ -539,6 +583,7 @@ main( hypre_int argc,
 
    if (problem_id == 1)
    {
+      CALI_MARK_BEGIN("problem1");
       time_index = hypre_InitializeTiming("GMRES Setup");
       hypre_MPI_Barrier(comm);
       hypre_BeginTiming(time_index);
@@ -553,7 +598,12 @@ main( hypre_int argc,
       HYPRE_GMRESSetRelChange(pcg_solver, rel_change);
 
       /* use BoomerAMG as preconditioner */
-      if (myid == 0 && print_stats) { hypre_printf("Solver: AMG-GMRES\n"); }
+      if (myid == 0 && print_stats) 
+      { 
+	      //CALI_MARK_BEGIN("BoomerAMG-GMRES");
+	      hypre_printf("Solver: AMG-GMRES\n");
+	      //CALI_MARK_END("BoomerAMG-GMRES"); 
+      }
 
       HYPRE_BoomerAMGCreate(&pcg_precond);
       HYPRE_BoomerAMGSetTol(pcg_precond, pc_tol);
@@ -563,7 +613,12 @@ main( hypre_int argc,
       HYPRE_BoomerAMGSetPrintLevel(pcg_precond, poutdat);
       HYPRE_BoomerAMGSetMaxIter(pcg_precond, 1);
       HYPRE_BoomerAMGSetNumSweeps(pcg_precond, num_sweeps);
-      if (relax_type > -1) { HYPRE_BoomerAMGSetRelaxType(pcg_precond, relax_type); }
+      if (relax_type > -1) 
+      { 
+	      //CALI_MARK_BEGIN("relax-type-GMRES");
+	      HYPRE_BoomerAMGSetRelaxType(pcg_precond, relax_type);
+	      //CALI_MARK_END("relax-type-GMRES"); 
+      }
       HYPRE_BoomerAMGSetDebugFlag(pcg_precond, debug_flag);
       HYPRE_BoomerAMGSetRAP2(pcg_precond, rap2);
       HYPRE_BoomerAMGSetKeepTranspose(pcg_precond, keepTranspose);
@@ -578,12 +633,16 @@ main( hypre_int argc,
       HYPRE_GMRESGetPrecond(pcg_solver, &pcg_precond_gotten);
       if (pcg_precond_gotten != pcg_precond)
       {
+	 //CALI_MARK_BEGIN("bad-precond-GMRES");
          hypre_printf("HYPRE_GMRESGetPrecond got bad precond\n");
+	 //CALI_MARK_END("bad-precond-GMRES");
          return (-1);
       }
       else if (myid == 0 && print_stats)
       {
+	 //CALI_MARK_BEGIN("good-precond-GMRES");
          hypre_printf("HYPRE_GMRESGetPrecond got good precond\n");
+	 //CALI_MARK_END("good-precond-GMRES");
       }
       HYPRE_GMRESSetup (pcg_solver, (HYPRE_Matrix)parcsr_A, (HYPRE_Vector)b, (HYPRE_Vector)x);
 
@@ -595,12 +654,15 @@ main( hypre_int argc,
       fflush(NULL);
 
       HYPRE_BoomerAMGGetCumNnzAP(pcg_precond, &cum_nnz_AP);
-
+      
       FOM2 = cum_nnz_AP / wall_time;
 
       if (myid == 0)
       {
+	 //CALI_MARK_BEGIN("FOM2-setup");
+	 cali_set_global_double_byname("P1Setup-FOM", FOM2);
          hypre_printf ("\nFOM_Setup: nnz_AP / Setup Phase Time: %e\n\n", FOM2);
+	 //CALI_MARK_END("FOM2-setup");
       }
 
       time_index = hypre_InitializeTiming("GMRES Solve");
@@ -626,14 +688,19 @@ main( hypre_int argc,
 
       if (myid == 0)
       {
+	 //CALI_MARK_BEGIN("Problem1-FOM");
          hypre_printf("\n");
          hypre_printf("Iterations = %d\n", num_iterations);
          hypre_printf("Final Relative Residual Norm = %e\n", final_res_norm);
          hypre_printf("\n");
+         cali_set_global_double_byname("P1-Solve-FOM", FOM2);
          hypre_printf ("\nFOM_Solve: nnz_AP * iterations / Solve Phase Time: %e\n\n", FOM2);
          FOM1 = 0.5 * (FOM1 + FOM2);
+         cali_set_global_double_byname("P1-FOM", FOM1);
          hypre_printf ("\n\nFigure of Merit (FOM): %e\n\n", FOM1);
+	 //CALI_MARK_END("Problem1-FOM");
       }
+      CALI_MARK_END("problem1");
    }
 
 
@@ -643,7 +710,9 @@ main( hypre_int argc,
 
    if (print_system)
    {
+      //CALI_MARK_BEGIN("sytem-output");
       HYPRE_IJVectorPrint(ij_x, "IJ.out.x");
+      //CALI_MARK_END("system-output");
    }
 
    /*-----------------------------------------------------------
@@ -661,7 +730,8 @@ main( hypre_int argc,
 
    /* Finalize MPI */
    hypre_MPI_Finalize();
-
+   
+   CALI_MARK_END("main");
    return (0);
 }
 
