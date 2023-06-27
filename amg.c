@@ -528,6 +528,7 @@ main( hypre_int argc,
       HYPRE_BoomerAMGGetCumNnzAP(pcg_precond, &cum_nnz_AP);
       FOM1 = cum_nnz_AP / wall_time;
 
+      CALI_MARK_BEGIN("Problem2-FOM-Setup");
       if (myid == 0)
       {
 	 //CALI_MARK_BEGIN("FOM1-setup");
@@ -535,6 +536,7 @@ main( hypre_int argc,
          hypre_printf ("\nFOM_Setup: nnz_AP / Setup Phase Time: %e\n\n", FOM1);
 	 //CALI_MARK_END("FOM1-setup");
       }
+      CALI_MARK_END("Problem2-FOM-Setup");
 
       time_index = hypre_InitializeTiming("PCG Solve");
       hypre_MPI_Barrier(comm);
@@ -560,6 +562,7 @@ main( hypre_int argc,
       
       FOM2 = cum_nnz_AP * (HYPRE_Real)num_iterations / wall_time;
 
+      CALI_MARK_BEGIN("Problem2-FOM-Solve");
       if (myid == 0)
       {
 	 //CALI_MARK_BEGIN("Problem2-FOM");
@@ -574,6 +577,7 @@ main( hypre_int argc,
          hypre_printf ("\n\nFigure of Merit (FOM): %e\n\n", FOM1);
 	 //CALI_MARK_END("Prolbem2-FOM");
       }
+      CALI_MARK_END("Problem2-FOM-Solve");
       CALI_MARK_END("problem2");
    }
 
@@ -657,6 +661,7 @@ main( hypre_int argc,
       
       FOM2 = cum_nnz_AP / wall_time;
 
+      CALI_MARK_BEGIN("Problem1-FOM-Setup");
       if (myid == 0)
       {
 	 //CALI_MARK_BEGIN("FOM2-setup");
@@ -664,6 +669,7 @@ main( hypre_int argc,
          hypre_printf ("\nFOM_Setup: nnz_AP / Setup Phase Time: %e\n\n", FOM2);
 	 //CALI_MARK_END("FOM2-setup");
       }
+      CALI_MARK_END("Problem1-FOM-Setup");
 
       time_index = hypre_InitializeTiming("GMRES Solve");
       hypre_MPI_Barrier(comm);
@@ -686,6 +692,7 @@ main( hypre_int argc,
       HYPRE_ParCSRGMRESDestroy(pcg_solver);
       FOM2 = cum_nnz_AP * (HYPRE_Real)num_iterations / wall_time;
 
+      CALI_MARK_BEGIN("Problem1-FOM-Solve");
       if (myid == 0)
       {
 	 //CALI_MARK_BEGIN("Problem1-FOM");
@@ -700,6 +707,7 @@ main( hypre_int argc,
          hypre_printf ("\n\nFigure of Merit (FOM): %e\n\n", FOM1);
 	 //CALI_MARK_END("Problem1-FOM");
       }
+      CALI_MARK_END("Problem1-FOM-Solve");
       CALI_MARK_END("problem1");
    }
 
@@ -823,6 +831,9 @@ BuildIJLaplacian27pt( HYPRE_Int             argc,
       }
    }
 
+    cali_set_global_double_byname("Problem-Size-x", nx);
+    cali_set_global_double_byname("Problem-Size-y", ny);
+    cali_set_global_double_byname("Problem-Size-z", nz);
    /*-----------------------------------------------------------
     * Check a few things
     *-----------------------------------------------------------*/
@@ -841,6 +852,8 @@ BuildIJLaplacian27pt( HYPRE_Int             argc,
    ny_global = (HYPRE_BigInt)(Q * ny);
    nz_global = (HYPRE_BigInt)(R * nz);
    global_size = nx_global * ny_global * nz_global;
+
+   cali_set_global_double_byname("Global-Problem-Size", global_size);
    if (myid == 0)
 
    {
