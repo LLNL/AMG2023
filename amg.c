@@ -831,9 +831,9 @@ BuildIJLaplacian27pt( HYPRE_Int             argc,
       }
    }
 
-    cali_set_global_double_byname("Problem-Size-x", nx);
-    cali_set_global_double_byname("Problem-Size-y", ny);
-    cali_set_global_double_byname("Problem-Size-z", nz);
+    cali_set_global_double_byname("Problem1-Size-x", nx);
+    cali_set_global_double_byname("Problem1-Size-y", ny);
+    cali_set_global_double_byname("Problem1-Size-z", nz);
    /*-----------------------------------------------------------
     * Check a few things
     *-----------------------------------------------------------*/
@@ -853,7 +853,7 @@ BuildIJLaplacian27pt( HYPRE_Int             argc,
    nz_global = (HYPRE_BigInt)(R * nz);
    global_size = nx_global * ny_global * nz_global;
 
-   cali_set_global_double_byname("Global-Problem-Size", global_size);
+   //cali_set_global_double_byname("Global-Problem-Size", global_size);
    if (myid == 0)
 
    {
@@ -2607,6 +2607,9 @@ BuildIJLaplacian7pt( HYPRE_Int            argc,
       }
    }
 
+   cali_set_global_double_byname("Problem2-Size-x", nx);
+   cali_set_global_double_byname("Problem2-Size-y", ny);
+   cali_set_global_double_byname("Problem2-Size-z", nz);
    /*-----------------------------------------------------------
     * Check a few things
     *-----------------------------------------------------------*/
