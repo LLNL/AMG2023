@@ -25,7 +25,7 @@ ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
 ADIAK_LIBS = -L$(ADIAK_PATH)/lib -ladiak
 ADIAK_INCLUDE = -I$(ADIAK_PATH)/include
 
-CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper-cpu-only
+CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
 CALIPER_LIBS = -Wl,-rpath $(CALIPER_PATH)/lib64 -L$(CALIPER_PATH)/lib64 -lcaliper
 CALIPER_INCLUDE = -I$(CALIPER_PATH)/include
 
