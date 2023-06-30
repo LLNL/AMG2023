@@ -5,13 +5,13 @@
 ########################################################################
 # Compiler and external dependences
 ########################################################################
-#CC        = mpixlc
-CC        = mpicc
+CC        = mpixlc
+#CC        = mpicc
 #CC        = mpiicc
 #CC        = cc  
 
-#CXX       = mpixlC
-CXX       = mpic++
+CXX       = mpixlC
+#CXX       = mpic++
 #CXX       = mpiicc
 #CXX       = CC 
 
@@ -21,19 +21,23 @@ LINK_CXX  = ${CXX}
 AR	= ar -rcu
 RANLIB  = ranlib
 
-CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
-CALIPER_LIBS = -L$(CALIPER_PATH)/lib64 -lcaliper
-CALIPER_INCLUDE = -I$(CALIPER_PATH)/include/caliper
+ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
+ADIAK_LIBS = -L$(ADIAK_PATH)/lib -ladiak
+ADIAK_INCLUDE = -I$(ADIAK_PATH)/include
 
-LDFLAGS = $(CALIPER_LIBS)
-#LIBS    = -lm ${HYPRE_CUDA_LIBS} ${HYPRE_HIP_LIBS}
+CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper-cpu-only
+CALIPER_LIBS = -Wl,-rpath $(CALIPER_PATH)/lib64 -L$(CALIPER_PATH)/lib64 -lcaliper
+CALIPER_INCLUDE = -I$(CALIPER_PATH)/include
 
-INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE} $(CALIPER_INCLUDE)
+LDFLAGS = $(CALIPER_LIBS) $(ADIAK_LIBS)
+LIBS    = -lm ${HYPRE_CUDA_LIBS} ${HYPRE_HIP_LIBS}
+
+INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE} $(CALIPER_INCLUDE) $(ADIAK_INCLUDE)
 
 ##################################################################
 ## Set path to hypre installation
 ##################################################################
-HYPRE_DIR = /g/g15/jeter3/hypre/src/hypre
+HYPRE_DIR = /g/g15/jeter3/build-lassen/hypre/src/hypre
 
 ##################################################################
 ##  MPI options - this is needed for Crusher, Tioga, RZVernal, 
@@ -48,9 +52,9 @@ HYPRE_DIR = /g/g15/jeter3/hypre/src/hypre
 ########################################################################
 # CUDA options - set correct paths depending on cuda package
 ########################################################################
-HYPRE_CUDA_PATH    = #/usr/tce/packages/cuda/cuda-10.1.243
-HYPRE_CUDA_INCLUDE = #-I${HYPRE_CUDA_PATH}/include
-HYPRE_CUDA_LIBS    = #-L${HYPRE_CUDA_PATH}/lib64 -lcudart -lcusparse -lcublas -lcurand
+#HYPRE_CUDA_PATH    = /usr/tce/packages/cuda/cuda-10.1.243
+#HYPRE_CUDA_INCLUDE = -I${HYPRE_CUDA_PATH}/include
+#HYPRE_CUDA_LIBS    = -L${HYPRE_CUDA_PATH}/lib64 -lcudart -lcusparse -lcublas -lcurand
 
 ########################################################################
 # HIP options set correct path depending on rocm version
@@ -69,16 +73,16 @@ CDEFS = -DHYPRE_TIMING
 ########################################################################
 # MPI only
 ########################################################################
-COPTS = -O2 -DHAVE_CONFIG_H 
-LINKOPTS = 
+#COPTS = -O2 -DHAVE_CONFIG_H 
+#LINKOPTS = 
 
 ########################################################################
 # MPI  and OpenMP threading
 ########################################################################
 #COPTS = -O2 -DHAVE_CONFIG_H -fopenmp
 #LINKOPTS = -fopenmp 
-#COPTS = -O2 -DHAVE_CONFIG_H -qsmp=omp
-#LINKOPTS = -qsmp=omp
+COPTS = -O2 -DHAVE_CONFIG_H -qsmp=omp
+LINKOPTS = -qsmp=omp
 #COPTS = -O2 -DHAVE_CONFIG_H -qopenmp
 #LINKOPTS = -qopenmp 
 

@@ -42,10 +42,8 @@
 #include <time.h>
 
 /*********** Added Caliper headers ***********/
-# include <cali.h>
-# include <cali-manager.h>
-# include <cali_datatracker.h>
-# include <cali-mpi.h>
+#include <caliper/cali.h>
+#include <adiak.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -454,9 +452,10 @@ main( hypre_int argc,
 
    if (problem_id == 2 )
    {
-      CALI_MARK_BEGIN("problem2");
+      CALI_MARK_BEGIN("problem");
       time_index = hypre_InitializeTiming("PCG Setup");
       hypre_MPI_Barrier(comm);
+      CALI_MARK_BEGIN("Setup");
       hypre_BeginTiming(time_index);
       HYPRE_ParCSRPCGCreate(comm, &pcg_solver);
       HYPRE_PCGSetMaxIter(pcg_solver, max_iter);
@@ -520,6 +519,7 @@ main( hypre_int argc,
 
       hypre_MPI_Barrier(comm);
       hypre_EndTiming(time_index);
+      CALI_MARK_END("Setup");
       hypre_GetTiming("Problem 2: AMG Setup Time", &wall_time, comm);
       hypre_FinalizeTiming(time_index);
       hypre_ClearTiming();
@@ -540,6 +540,7 @@ main( hypre_int argc,
 
       time_index = hypre_InitializeTiming("PCG Solve");
       hypre_MPI_Barrier(comm);
+      CALI_MARK_BEGIN("Solve");
       hypre_BeginTiming(time_index);
 
       HYPRE_PCGSolve(pcg_solver, (HYPRE_Matrix)parcsr_A,
@@ -547,6 +548,7 @@ main( hypre_int argc,
 
       hypre_MPI_Barrier(comm);
       hypre_EndTiming(time_index);
+      CALI_MARK_END("Solve");
       hypre_GetTiming("Problem 2: AMG-PCG Solve Time", &wall_time, comm);
       hypre_FinalizeTiming(time_index);
       hypre_ClearTiming();
@@ -562,7 +564,7 @@ main( hypre_int argc,
       
       FOM2 = cum_nnz_AP * (HYPRE_Real)num_iterations / wall_time;
 
-      CALI_MARK_BEGIN("Problem2-FOM-Solve");
+      CALI_MARK_BEGIN("FOM-Calculate");
       if (myid == 0)
       {
 	 //CALI_MARK_BEGIN("Problem2-FOM");
@@ -570,15 +572,15 @@ main( hypre_int argc,
          hypre_printf("Iterations = %d\n", num_iterations);
          hypre_printf("Final Relative Residual Norm = %e\n", final_res_norm);
          hypre_printf("\n");
-         cali_set_global_double_byname("P2-Solve-FOM", FOM2);
+	 adiak_namevalue("Solve-FOM", adiak_general, NULL, "%f", FOM2);
          hypre_printf ("\nFOM_Solve: nnz_AP * iterations / Solve Phase Time: %e\n\n", FOM2);
          FOM1 = 0.5 * (FOM1 + FOM2);
-         cali_set_global_double_byname("P2-FOM", FOM1);
+	 adiak_namevalue("FOM", adiak_general, NULL, "%f", FOM1);
          hypre_printf ("\n\nFigure of Merit (FOM): %e\n\n", FOM1);
 	 //CALI_MARK_END("Prolbem2-FOM");
       }
-      CALI_MARK_END("Problem2-FOM-Solve");
-      CALI_MARK_END("problem2");
+      CALI_MARK_END("FOM-Calculate");
+      CALI_MARK_END("problem");
    }
 
    /*-----------------------------------------------------------
