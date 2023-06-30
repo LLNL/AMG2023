@@ -67,6 +67,12 @@ hypre_int
 main( hypre_int argc,
       char *argv[] )
 {
+   adiak_user();
+   adiak_uid();
+   adiak_launchdate();
+   adiak_libraries();
+   adiak_cmdline();
+   adiak_hostname();
    CALI_MARK_BEGIN("main");
    HYPRE_Int           arg_index;
    HYPRE_Int           print_usage;
