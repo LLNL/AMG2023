@@ -70,9 +70,12 @@ main( hypre_int argc,
    adiak_user();
    adiak_uid();
    adiak_launchdate();
+   adiak_executable();
+   adiak_executablepath();
    adiak_libraries();
    adiak_cmdline();
    adiak_hostname();
+   adiak_clustername();
    CALI_MARK_BEGIN("main");
    HYPRE_Int           arg_index;
    HYPRE_Int           print_usage;
