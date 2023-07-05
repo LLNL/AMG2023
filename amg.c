@@ -67,6 +67,7 @@ hypre_int
 main( hypre_int argc,
       char *argv[] )
 {
+   adiak_init(NULL);
    adiak_user();
    adiak_uid();
    adiak_launchdate();
@@ -712,6 +713,7 @@ main( hypre_int argc,
    hypre_MPI_Finalize();
    
    CALI_MARK_END("main");
+   adiak_fini();
    return (0);
 }
 
