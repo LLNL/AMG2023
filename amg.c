@@ -189,10 +189,10 @@ main( hypre_int argc,
    adiak_clustername();
 
 #ifdef AMG_COMPILER_NAME_STR
-      adiak_namevalue("compiler", adiak_general, NULL, "%s", AMG_COMPILER_NAME_STR);
+   adiak_namevalue("compiler", adiak_general, NULL, "%s", AMG_COMPILER_NAME_STR);
 #endif
 
-    CALI_MARK_BEGIN("main");
+   CALI_MARK_BEGIN("main");
 
    /*-----------------------------------------------------------
     * Set defaults
