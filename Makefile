@@ -22,7 +22,7 @@ AR	= ar -rcu
 RANLIB  = ranlib
 
 ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
-ADIAK_LIBS = -L$(ADIAK_PATH)/lib -ladiak
+ADIAK_LIBS = -Wl,-rpath $(ADIAK_PATH)/lib -L$(ADIAK_PATH)/lib -ladiak #-L$(ADIAK_PATH)/lib -ladiak
 ADIAK_INCLUDE = -I$(ADIAK_PATH)/include
 
 CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
@@ -66,9 +66,10 @@ HYPRE_HIP_INCLUDE = -I${HYPRE_HIP_PATH}/include
 ########################################################################
 # Compiling and linking options
 ########################################################################
+COMPILER_NAME="$(shell $(CXX) --version | head -1)"
 
 CINCLUDES = -I. -I$(HYPRE_DIR)/include $(INCLUDES)
-CDEFS = -DHYPRE_TIMING
+CDEFS = -DHYPRE_TIMING -DAMG_COMPILER_NAME=$(COMPILER_NAME)
 
 ########################################################################
 # MPI only
@@ -90,9 +91,9 @@ CFLAGS = $(COPTS) $(CINCLUDES) $(CDEFS)
 CXXOPTS = $(COPTS) -Wno-deprecated
 CXXINCLUDES = $(CINCLUDES) -I..
 CXXDEFS = $(CDEFS)
-CXXFLAGS  = $(COPTS) $(CINCLUDES) $(CDEFS) 
+CXXFLAGS  = $(COPTS) $(CINCLUDES) $(CDEFS)
 
-LIBS = -L$(HYPRE_DIR)/lib -lHYPRE $(XLINK) ${MPILIBS} -lm $(HYPRE_CUDA_LIBS) $(HYPRE_HIP_LIBS) $(CALIPER_LIBS)
+LIBS = -L$(HYPRE_DIR)/lib -lHYPRE $(XLINK) ${MPILIBS} -lm $(HYPRE_CUDA_LIBS) $(HYPRE_HIP_LIBS) $(CALIPER_LIBS) $(ADIAK_LIBS)
 #LIBS = -L$(HYPRE_DIR)/lib -lHYPRE $(XLINK) ${MPILIBS} $(HYPRE_HIP_LIBS)
 #LFLAGS = $(LINKOPTS) $(LIBS) -lstdc++
 

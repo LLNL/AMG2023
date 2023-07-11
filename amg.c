@@ -41,9 +41,11 @@
 
 #include <time.h>
 
-/*********** Added Caliper headers ***********/
+/*********** Added Caliper and Adiak headers ***********/
 #include <caliper/cali.h>
 #include <adiak.h>
+
+#include "build_args.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,17 +69,6 @@ hypre_int
 main( hypre_int argc,
       char *argv[] )
 {
-   adiak_init(NULL);
-   adiak_user();
-   adiak_uid();
-   adiak_launchdate();
-   adiak_executable();
-   adiak_executablepath();
-   adiak_libraries();
-   adiak_cmdline();
-   adiak_hostname();
-   adiak_clustername();
-   CALI_MARK_BEGIN("main");
    HYPRE_Int           arg_index;
    HYPRE_Int           print_usage;
    HYPRE_Int           problem_id;
@@ -181,6 +172,26 @@ main( hypre_int argc,
 
    hypre_MPI_Comm_size(comm, &num_procs );
    hypre_MPI_Comm_rank(comm, &myid );
+
+   /*-----------------------------------------------------------
+    * Set Caliper and Adiak metadata
+    *----------------------------------------------------------*/
+   adiak_init(&comm);
+   adiak_user();
+   adiak_uid();
+   adiak_launchdate();
+   adiak_executable();
+   adiak_executablepath();
+   adiak_libraries();
+   adiak_cmdline();
+   adiak_hostname();
+   adiak_clustername();
+
+#ifdef AMG_COMPILER_NAME_STR
+      adiak_namevalue("compiler", adiak_general, NULL, "%s", AMG_COMPILER_NAME_STR);
+#endif
+
+    CALI_MARK_BEGIN("main");
 
    /*-----------------------------------------------------------
     * Set defaults
