@@ -5,15 +5,15 @@
 ########################################################################
 # Compiler and external dependences
 ########################################################################
-CC        = mpixlc
-#CC        = mpicc
+#CC        = mpixlc
+CC        = mpicc
 #CC        = mpiicc
-#CC        = cc  
+#CC        = cc
 
-CXX       = mpixlC
-#CXX       = mpic++
+#CXX       = mpixlC
+CXX       = mpic++
 #CXX       = mpiicc
-#CXX       = CC 
+#CXX       = CC
 
 LINK_CC   = ${CXX}
 LINK_CXX  = ${CXX}
@@ -21,26 +21,31 @@ LINK_CXX  = ${CXX}
 AR	= ar -rcu
 RANLIB  = ranlib
 
+<<<<<<< HEAD
 ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
 ADIAK_LIBS = -Wl,-rpath $(ADIAK_PATH)/lib -L$(ADIAK_PATH)/lib -ladiak #-L$(ADIAK_PATH)/lib -ladiak
+=======
+# ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
+ADIAK_PATH=$(shell spack location --install-dir adiak)
+ADIAK_LIBS = -Wl,-rpath $(ADIAK_PATH)/lib -L$(ADIAK_PATH)/lib -ladiak
+>>>>>>> 117002e9db27dfe4efe13cdbfcc6bae71d970471
 ADIAK_INCLUDE = -I$(ADIAK_PATH)/include
 
-CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
+# CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
+CALIPER_PATH=$(shell spack location --install-dir caliper)
 CALIPER_LIBS = -Wl,-rpath $(CALIPER_PATH)/lib64 -L$(CALIPER_PATH)/lib64 -lcaliper
 CALIPER_INCLUDE = -I$(CALIPER_PATH)/include
-
-LDFLAGS = $(CALIPER_LIBS) $(ADIAK_LIBS)
-LIBS    = -lm ${HYPRE_CUDA_LIBS} ${HYPRE_HIP_LIBS}
 
 INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE} $(CALIPER_INCLUDE) $(ADIAK_INCLUDE)
 
 ##################################################################
 ## Set path to hypre installation
 ##################################################################
-HYPRE_DIR = /g/g15/jeter3/build-lassen/hypre/src/hypre
+# HYPRE_DIR = /g/g15/jeter3/build-lassen/hypre/src/hypre
+HYPRE_DIR=$(shell spack location --install-dir hypre)
 
 ##################################################################
-##  MPI options - this is needed for Crusher, Tioga, RZVernal, 
+##  MPI options - this is needed for Crusher, Tioga, RZVernal,
 ##    when using AMD GPUs, might not be needed for other computers
 ##################################################################
 #MPIPATH = /opt/cray/pe/mpich/8.1.21/ofi/crayclang/10.0
@@ -68,24 +73,26 @@ HYPRE_HIP_INCLUDE = -I${HYPRE_HIP_PATH}/include
 ########################################################################
 COMPILER_NAME="$(shell $(CXX) --version | head -1)"
 
+COMPILER_NAME="$(shell $(CXX) --version | head -1)"
+
 CINCLUDES = -I. -I$(HYPRE_DIR)/include $(INCLUDES)
 CDEFS = -DHYPRE_TIMING -DAMG_COMPILER_NAME=$(COMPILER_NAME)
 
 ########################################################################
 # MPI only
 ########################################################################
-#COPTS = -O2 -DHAVE_CONFIG_H 
-#LINKOPTS = 
+#COPTS = -O2 -DHAVE_CONFIG_H
+#LINKOPTS =
 
 ########################################################################
 # MPI  and OpenMP threading
 ########################################################################
-#COPTS = -O2 -DHAVE_CONFIG_H -fopenmp
-#LINKOPTS = -fopenmp 
-COPTS = -O2 -DHAVE_CONFIG_H -qsmp=omp
-LINKOPTS = -qsmp=omp
+COPTS = -O2 -DHAVE_CONFIG_H -fopenmp
+LINKOPTS = -fopenmp
+#COPTS = -O2 -DHAVE_CONFIG_H -qsmp=omp
+#LINKOPTS = -qsmp=omp
 #COPTS = -O2 -DHAVE_CONFIG_H -qopenmp
-#LINKOPTS = -qopenmp 
+#LINKOPTS = -qopenmp
 
 CFLAGS = $(COPTS) $(CINCLUDES) $(CDEFS)
 CXXOPTS = $(COPTS) -Wno-deprecated
