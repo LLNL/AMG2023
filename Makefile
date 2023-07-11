@@ -5,13 +5,13 @@
 ########################################################################
 # Compiler and external dependences
 ########################################################################
-#CC        = mpixlc
-CC        = mpicc
+CC        = mpixlc
+#CC        = mpicc
 #CC        = mpiicc
 #CC        = cc
 
-#CXX       = mpixlC
-CXX       = mpic++
+CXX       = mpixlC
+#CXX       = mpic++
 #CXX       = mpiicc
 #CXX       = CC
 
@@ -25,14 +25,14 @@ RANLIB  = ranlib
 ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
 ADIAK_LIBS = -Wl,-rpath $(ADIAK_PATH)/lib -L$(ADIAK_PATH)/lib -ladiak #-L$(ADIAK_PATH)/lib -ladiak
 =======
-# ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
-ADIAK_PATH=$(shell spack location --install-dir adiak)
+ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
+#ADIAK_PATH=$(shell spack location --install-dir adiak)
 ADIAK_LIBS = -Wl,-rpath $(ADIAK_PATH)/lib -L$(ADIAK_PATH)/lib -ladiak
 >>>>>>> 117002e9db27dfe4efe13cdbfcc6bae71d970471
 ADIAK_INCLUDE = -I$(ADIAK_PATH)/include
 
-# CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
-CALIPER_PATH=$(shell spack location --install-dir caliper)
+#CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
+#CALIPER_PATH=$(shell spack location --install-dir caliper)
 CALIPER_LIBS = -Wl,-rpath $(CALIPER_PATH)/lib64 -L$(CALIPER_PATH)/lib64 -lcaliper
 CALIPER_INCLUDE = -I$(CALIPER_PATH)/include
 
@@ -41,8 +41,8 @@ INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE} $(CALIPER_IN
 ##################################################################
 ## Set path to hypre installation
 ##################################################################
-# HYPRE_DIR = /g/g15/jeter3/build-lassen/hypre/src/hypre
-HYPRE_DIR=$(shell spack location --install-dir hypre)
+HYPRE_DIR = /g/g15/jeter3/build-lassen/hypre/src/hypre
+#HYPRE_DIR=$(shell spack location --install-dir hypre)
 
 ##################################################################
 ##  MPI options - this is needed for Crusher, Tioga, RZVernal,
@@ -73,8 +73,6 @@ HYPRE_HIP_INCLUDE = -I${HYPRE_HIP_PATH}/include
 ########################################################################
 COMPILER_NAME="$(shell $(CXX) --version | head -1)"
 
-COMPILER_NAME="$(shell $(CXX) --version | head -1)"
-
 CINCLUDES = -I. -I$(HYPRE_DIR)/include $(INCLUDES)
 CDEFS = -DHYPRE_TIMING -DAMG_COMPILER_NAME=$(COMPILER_NAME)
 
@@ -87,10 +85,10 @@ CDEFS = -DHYPRE_TIMING -DAMG_COMPILER_NAME=$(COMPILER_NAME)
 ########################################################################
 # MPI  and OpenMP threading
 ########################################################################
-COPTS = -O2 -DHAVE_CONFIG_H -fopenmp
-LINKOPTS = -fopenmp
-#COPTS = -O2 -DHAVE_CONFIG_H -qsmp=omp
-#LINKOPTS = -qsmp=omp
+#COPTS = -O2 -DHAVE_CONFIG_H -fopenmp
+#LINKOPTS = -fopenmp
+COPTS = -O2 -DHAVE_CONFIG_H -qsmp=omp
+LINKOPTS = -qsmp=omp
 #COPTS = -O2 -DHAVE_CONFIG_H -qopenmp
 #LINKOPTS = -qopenmp
 
