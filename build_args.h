@@ -1,4 +1,4 @@
-#ifdef AMG_BUILD_ARGS_H
+#ifndef AMG_BUILD_ARGS_H
 #define AMG_BUILD_ARGS_H
 
 #define _build_arg_xstr(s) _build_arg_str(s)

@@ -66,7 +66,7 @@ HYPRE_HIP_INCLUDE = -I${HYPRE_HIP_PATH}/include
 ########################################################################
 # Compiling and linking options
 ########################################################################
-COMPILER_NAME="$(shell $(CXX) --version | head -1)"
+COMPILER_NAME="$(shell $(CXX) --version | head -1 | tr -d ,)"
 
 CINCLUDES = -I. -I$(HYPRE_DIR)/include $(INCLUDES)
 CDEFS = -DHYPRE_TIMING -DAMG_COMPILER_NAME=$(COMPILER_NAME)
