@@ -174,13 +174,8 @@ main( hypre_int argc,
    hypre_MPI_Comm_rank(comm, &myid );
 
    /*-----------------------------------------------------------
-<<<<<<< HEAD
     * Set Caliper and Adiak metadata
     *----------------------------------------------------------*/
-=======
-    * Set Caliper/Adiak metadata
-    *-----------------------------------------------------------*/
->>>>>>> 117002e9db27dfe4efe13cdbfcc6bae71d970471
    adiak_init(&comm);
    adiak_user();
    adiak_uid();
@@ -193,17 +188,10 @@ main( hypre_int argc,
    adiak_clustername();
 
 #ifdef AMG_COMPILER_NAME_STR
-<<<<<<< HEAD
       adiak_namevalue("compiler", adiak_general, NULL, "%s", AMG_COMPILER_NAME_STR);
 #endif
 
     CALI_MARK_BEGIN("main");
-=======
-   adiak_namevalue("compiler", adiak_general, NULL, "%s", AMG_COMPILER_NAME_STR);
-#endif
-
-   CALI_MARK_BEGIN("main");
->>>>>>> 117002e9db27dfe4efe13cdbfcc6bae71d970471
 
    /*-----------------------------------------------------------
     * Set defaults

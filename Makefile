@@ -21,17 +21,12 @@ LINK_CXX  = ${CXX}
 AR	= ar -rcu
 RANLIB  = ranlib
 
-<<<<<<< HEAD
-ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
-ADIAK_LIBS = -Wl,-rpath $(ADIAK_PATH)/lib -L$(ADIAK_PATH)/lib -ladiak #-L$(ADIAK_PATH)/lib -ladiak
-=======
 ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
 #ADIAK_PATH=$(shell spack location --install-dir adiak)
-ADIAK_LIBS = -Wl,-rpath $(ADIAK_PATH)/lib -L$(ADIAK_PATH)/lib -ladiak
->>>>>>> 117002e9db27dfe4efe13cdbfcc6bae71d970471
+ADIAK_LIBS = -Wl,-rpath $(ADIAK_PATH)/lib -L$(ADIAK_PATH)/lib -ladiak #-L$(ADIAK_PATH)/lib -ladiak
 ADIAK_INCLUDE = -I$(ADIAK_PATH)/include
 
-#CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
+CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
 #CALIPER_PATH=$(shell spack location --install-dir caliper)
 CALIPER_LIBS = -Wl,-rpath $(CALIPER_PATH)/lib64 -L$(CALIPER_PATH)/lib64 -lcaliper
 CALIPER_INCLUDE = -I$(CALIPER_PATH)/include
