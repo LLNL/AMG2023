@@ -52,9 +52,9 @@ HYPRE_DIR = /g/g15/jeter3/build-lassen/hypre/src/hypre
 ########################################################################
 # CUDA options - set correct paths depending on cuda package
 ########################################################################
-#HYPRE_CUDA_PATH    = /usr/tce/packages/cuda/cuda-10.1.243
-#HYPRE_CUDA_INCLUDE = -I${HYPRE_CUDA_PATH}/include
-#HYPRE_CUDA_LIBS    = -L${HYPRE_CUDA_PATH}/lib64 -lcudart -lcusparse -lcublas -lcurand
+HYPRE_CUDA_PATH    = /usr/tce/packages/cuda/cuda-10.1.243
+HYPRE_CUDA_INCLUDE = -I${HYPRE_CUDA_PATH}/include
+HYPRE_CUDA_LIBS    = -L${HYPRE_CUDA_PATH}/lib64 -lcudart -lcusparse -lcublas -lcurand
 
 ########################################################################
 # HIP options set correct path depending on rocm version

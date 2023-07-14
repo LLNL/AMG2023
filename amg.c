@@ -44,7 +44,7 @@
 /*********** Added Caliper and Adiak headers ***********/
 #include <caliper/cali.h>
 #include <adiak.h>
-
+#include </usr/tce/packages/cuda/cuda-10.1.243/include/cuda.h> 
 #include "build_args.h"
 
 #ifdef __cplusplus
