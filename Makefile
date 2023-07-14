@@ -21,12 +21,12 @@ LINK_CXX  = ${CXX}
 AR	= ar -rcu
 RANLIB  = ranlib
 
-ADIAK_PATH= /g/g15/jeter3/build-lassen/adiak
+ADIAK_PATH= /g/g15/jeter3/monitor-lassen/adiak
 #ADIAK_PATH=$(shell spack location --install-dir adiak)
 ADIAK_LIBS = -Wl,-rpath $(ADIAK_PATH)/lib -L$(ADIAK_PATH)/lib -ladiak #-L$(ADIAK_PATH)/lib -ladiak
 ADIAK_INCLUDE = -I$(ADIAK_PATH)/include
 
-CALIPER_PATH = /g/g15/jeter3/build-lassen/caliper
+CALIPER_PATH = /g/g15/jeter3/monitor-lassen/caliper
 #CALIPER_PATH=$(shell spack location --install-dir caliper)
 CALIPER_LIBS = -Wl,-rpath $(CALIPER_PATH)/lib64 -L$(CALIPER_PATH)/lib64 -lcaliper
 CALIPER_INCLUDE = -I$(CALIPER_PATH)/include
@@ -36,7 +36,7 @@ INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE} $(CALIPER_IN
 ##################################################################
 ## Set path to hypre installation
 ##################################################################
-HYPRE_DIR = /g/g15/jeter3/build-lassen/hypre/src/hypre
+HYPRE_DIR = /g/g15/jeter3/monitor-lassen/hypre/src/hypre
 #HYPRE_DIR=$(shell spack location --install-dir hypre)
 
 ##################################################################
