@@ -37,7 +37,22 @@ Other available targets are
 
 Further information is available in the 'amg-doc' file.
 
+### Building with cmake
 
+We have also provided a cmake build   
+```  
+mkdir build && cd build
+
+cmake -DHYPRE_PREFIX=<path/to/hypre/> ..
+
+make install
+```
+To edit configurations:
+```  
+cd build
+
+ccmake ..
+```
 # Additional Information
 
 For more information, see the 'amg-doc' file in the distribution.
