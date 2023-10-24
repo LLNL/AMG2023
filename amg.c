@@ -112,6 +112,7 @@ main( hypre_int argc,
    HYPRE_BigInt        system_size;
    HYPRE_Real          cum_nnz_AP = 1;
    HYPRE_Real          FOM1 = 0, FOM2 = 0;
+   HYPRE_Real          total_time = 0;
 
    /* parameters for GMRES */
    HYPRE_Int           k_dim = 100;
@@ -490,6 +491,7 @@ main( hypre_int argc,
       HYPRE_BoomerAMGGetCumNnzAP(pcg_precond, &cum_nnz_AP);
 
       FOM1 = cum_nnz_AP / wall_time;
+      total_time = wall_time;
 
       if (myid == 0)
       {
@@ -518,7 +520,8 @@ main( hypre_int argc,
 
       HYPRE_ParCSRPCGDestroy(pcg_solver);
 
-      FOM2 = cum_nnz_AP * (HYPRE_Real)num_iterations / wall_time;
+      FOM2 = cum_nnz_AP / wall_time;
+      total_time += 3*wall_time;
 
       if (myid == 0)
       {
@@ -527,8 +530,8 @@ main( hypre_int argc,
          hypre_printf("Final Relative Residual Norm = %e\n", final_res_norm);
          hypre_printf("\n");
          hypre_printf ("\nFOM_Solve: nnz_AP * iterations / Solve Phase Time: %e\n\n", FOM2);
-         FOM1 = 0.5 * (FOM1 + FOM2);
-         hypre_printf ("\n\nFigure of Merit (FOM): %e\n\n", FOM1);
+         FOM1 = cum_nnz_AP/total_time;
+         hypre_printf ("\n\nFigure of Merit (FOM): nnz_AP / (Setup Phase Time + 3 * Solve Phase Time) %e\n\n", FOM1);
       }
 
    }
@@ -597,6 +600,7 @@ main( hypre_int argc,
       HYPRE_BoomerAMGGetCumNnzAP(pcg_precond, &cum_nnz_AP);
 
       FOM1 = cum_nnz_AP / wall_time;
+      total_time = wall_time;
 
       if (myid == 0)
       {
@@ -622,7 +626,8 @@ main( hypre_int argc,
       HYPRE_BoomerAMGDestroy(pcg_precond);
 
       HYPRE_ParCSRGMRESDestroy(pcg_solver);
-      FOM2 = cum_nnz_AP * (HYPRE_Real)num_iterations / wall_time;
+      FOM2 = cum_nnz_AP / wall_time;
+      total_time += wall_time;
 
       if (myid == 0)
       {
@@ -630,9 +635,9 @@ main( hypre_int argc,
          hypre_printf("Iterations = %d\n", num_iterations);
          hypre_printf("Final Relative Residual Norm = %e\n", final_res_norm);
          hypre_printf("\n");
-         hypre_printf ("\nFOM_Solve: nnz_AP * iterations / Solve Phase Time: %e\n\n", FOM2);
-         FOM1 = 0.5 * (FOM1 + FOM2);
-         hypre_printf ("\n\nFigure of Merit (FOM): %e\n\n", FOM1);
+         hypre_printf ("\nFOM_Solve: nnz_AP / Solve Phase Time: %e\n\n", FOM2);
+         FOM1 = cum_nnz_AP / total_time;
+         hypre_printf ("\n\nFigure of Merit (FOM): nnz_AP / (Setup Phase Time + Solve Phase Time) %e\n\n", FOM1);
       }
    }
 
