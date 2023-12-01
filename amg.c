@@ -110,7 +110,7 @@ main( hypre_int argc,
    HYPRE_Int           P_max_elmts = 4;
    HYPRE_Int           coarsen_type = 8;
    HYPRE_Int           num_sweeps = 1;
-   HYPRE_Int           relax_type = 18;
+   HYPRE_Int           relax_type = -1;
    HYPRE_Int           rap2 = 0;
    //HYPRE_Int    mod_rap2=0;
    HYPRE_Int           keepTranspose = 1;
@@ -482,7 +482,7 @@ main( hypre_int argc,
       if (myid == 0 && print_stats) { hypre_printf("Solver: AMG-PCG\n"); }
       HYPRE_BoomerAMGCreate(&pcg_precond);
       HYPRE_BoomerAMGSetTol(pcg_precond, pc_tol);
-      HYPRE_BoomerAMGSetCoarsenType(pcg_precond, coarsen_type);
+      /*HYPRE_BoomerAMGSetCoarsenType(pcg_precond, coarsen_type);*/
       HYPRE_BoomerAMGSetInterpType(pcg_precond, interp_type);
       HYPRE_BoomerAMGSetPMaxElmts(pcg_precond, P_max_elmts);
       HYPRE_BoomerAMGSetPrintLevel(pcg_precond, poutdat);
@@ -629,7 +629,7 @@ main( hypre_int argc,
 
       HYPRE_BoomerAMGCreate(&pcg_precond);
       HYPRE_BoomerAMGSetTol(pcg_precond, pc_tol);
-      HYPRE_BoomerAMGSetCoarsenType(pcg_precond, coarsen_type);
+      /*HYPRE_BoomerAMGSetCoarsenType(pcg_precond, coarsen_type);*/
       HYPRE_BoomerAMGSetInterpType(pcg_precond, interp_type);
       HYPRE_BoomerAMGSetPMaxElmts(pcg_precond, P_max_elmts);
       HYPRE_BoomerAMGSetPrintLevel(pcg_precond, poutdat);
