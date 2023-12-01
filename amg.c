@@ -389,6 +389,9 @@ main( hypre_int argc,
    /* give hypre the pool names */
    HYPRE_SetUmpireDevicePoolName(device_pool_name);
    HYPRE_SetUmpireUMPoolName(um_pool_name);
+   /* allocate and free some GPU memory */
+   HYPRE_Int *tmp_ptr = hypre_TAlloc(HYPRE_Int, umpire_dev_pool_size / 2, memory_location);
+   hypre_TFree(tmp_ptr, memory_location);
    /* make sure hypre doesn't own the pools */
    assert(hypre_HandleOwnUmpireUMPool(hypre_handle()) == 0);
    assert(hypre_HandleOwnUmpireDevicePool(hypre_handle()) == 0);
