@@ -8,12 +8,12 @@
 #CC        = mpixlc
 CC        = mpicc
 #CC        = mpiicc
-#CC        = cc  
+#CC        = cc
 
 #CXX       = mpixlC
 CXX       = mpic++
 #CXX       = mpiicc
-#CXX       = CC 
+#CXX       = CC
 
 LINK_CC   = ${CXX}
 LINK_CXX  = ${CXX}
@@ -24,15 +24,15 @@ RANLIB  = ranlib
 LDFLAGS =
 #LIBS    = -lm ${HYPRE_CUDA_LIBS} ${HYPRE_HIP_LIBS}
 
-INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE}
+INCLUDES = ${HYPRE_CUDA_INCLUDE} ${HYPRE_HIP_INCLUDE} ${MPIINCLUDE} ${HYPRE_UMPIRE_INCLUDE}
 
 ##################################################################
 ## Set path to hypre installation
 ##################################################################
-HYPRE_DIR = /g/g20/ulrikey/hypre-2.27.0/hypre/src/hypre
+HYPRE_DIR = /usr/WS1/li50/hypre/releases/src/hypre
 
 ##################################################################
-##  MPI options - this is needed for Crusher, Tioga, RZVernal, 
+##  MPI options - this is needed for Crusher, Tioga, RZVernal,
 ##    when using AMD GPUs, might not be needed for other computers
 ##################################################################
 #MPIPATH = /opt/cray/pe/mpich/8.1.21/ofi/crayclang/10.0
@@ -44,16 +44,23 @@ HYPRE_DIR = /g/g20/ulrikey/hypre-2.27.0/hypre/src/hypre
 ########################################################################
 # CUDA options - set correct paths depending on cuda package
 ########################################################################
-HYPRE_CUDA_PATH    = #/usr/tce/packages/cuda/cuda-10.1.243
-HYPRE_CUDA_INCLUDE = #-I${HYPRE_CUDA_PATH}/include
-HYPRE_CUDA_LIBS    = #-L${HYPRE_CUDA_PATH}/lib64 -lcudart -lcusparse -lcublas -lcurand
+HYPRE_CUDA_PATH    = /usr/tce/packages/cuda/cuda-10.1.243
+HYPRE_CUDA_INCLUDE = -I${HYPRE_CUDA_PATH}/include
+HYPRE_CUDA_LIBS    = -L${HYPRE_CUDA_PATH}/lib64 -lcudart -lcusparse -lcublas -lcurand
 
 ########################################################################
 # HIP options set correct path depending on rocm version
 ########################################################################
-HYPRE_HIP_PATH    = /opt/rocm-5.4.1
-HYPRE_HIP_INCLUDE = -I${HYPRE_HIP_PATH}/include
-HYPRE_HIP_LIBS    = -L${HYPRE_HIP_PATH}/lib -lamdhip64 -lrocsparse -lrocrand
+HYPRE_HIP_PATH    = #/opt/rocm-5.4.1
+HYPRE_HIP_INCLUDE = #-I${HYPRE_HIP_PATH}/include
+HYPRE_HIP_LIBS    = #-L${HYPRE_HIP_PATH}/lib -lamdhip64 -lrocsparse -lrocrand
+
+##################################################################
+##  UMPIRE options
+##################################################################
+HYPRE_UMPIRE_LIB_DIR      = -L/usr/workspace/hypre/ext-libs/Umpire/2022.03.1-nvcc10.1.243-sm_70-xl2021.09.22/lib
+HYPRE_UMPIRE_INCLUDE      = -I/usr/workspace/hypre/ext-libs/Umpire/2022.03.1-nvcc10.1.243-sm_70-xl2021.09.22/include
+HYPRE_UMPIRE_LIB          = -lumpire
 
 ########################################################################
 # Compiling and linking options
@@ -65,26 +72,26 @@ CDEFS = -DHYPRE_TIMING
 ########################################################################
 # MPI only
 ########################################################################
-COPTS = -O2 -DHAVE_CONFIG_H 
-LINKOPTS = 
+COPTS = -O2 -DHAVE_CONFIG_H
+LINKOPTS =
 
 ########################################################################
 # MPI  and OpenMP threading
 ########################################################################
 #COPTS = -O2 -DHAVE_CONFIG_H -fopenmp
-#LINKOPTS = -fopenmp 
+#LINKOPTS = -fopenmp
 #COPTS = -O2 -DHAVE_CONFIG_H -qsmp=omp
 #LINKOPTS = -qsmp=omp
 #COPTS = -O2 -DHAVE_CONFIG_H -qopenmp
-#LINKOPTS = -qopenmp 
+#LINKOPTS = -qopenmp
 
 CFLAGS = $(COPTS) $(CINCLUDES) $(CDEFS)
 CXXOPTS = $(COPTS) -Wno-deprecated
 CXXINCLUDES = $(CINCLUDES) -I..
 CXXDEFS = $(CDEFS)
-CXXFLAGS  = $(COPTS) $(CINCLUDES) $(CDEFS) 
+CXXFLAGS  = $(COPTS) $(CINCLUDES) $(CDEFS)
 
-LIBS = -L$(HYPRE_DIR)/lib -lHYPRE $(XLINK) ${MPILIBS} -lm $(HYPRE_CUDA_LIBS) $(HYPRE_HIP_LIBS)
+LIBS = -L$(HYPRE_DIR)/lib -lHYPRE $(XLINK) ${MPILIBS} -lm $(HYPRE_CUDA_LIBS) $(HYPRE_HIP_LIBS) ${HYPRE_UMPIRE_LIB_DIR} ${HYPRE_UMPIRE_LIB}
 #LIBS = -L$(HYPRE_DIR)/lib -lHYPRE $(XLINK) ${MPILIBS} $(HYPRE_HIP_LIBS)
 #LFLAGS = $(LINKOPTS) $(LIBS) -lstdc++
 
