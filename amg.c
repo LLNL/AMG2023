@@ -18,12 +18,12 @@
 
    Interface:    Linear-Algebraic (IJ)
 
-   Compile with: make 
+   Compile with: make
 
    Description:  This driver solves a 3-D diffusion problem with zero boundary
                  conditions on a cuboid.
                  Solvers are PCG with AMG or GMRES with AMG
-                 preconditioners.  
+                 preconditioners.
  *--------------------------------------------------------------------------*/
 
 #include <stdlib.h>
@@ -352,6 +352,51 @@ main( hypre_int argc,
    hypre_FinalizeTiming(time_index);
    hypre_ClearTiming();
 
+   /*-----------------------------------------------------------------
+    * UMPIRE Pools
+    *-----------------------------------------------------------------*/
+#if defined(HYPRE_USING_UMPIRE)
+   char device_pool_name[] = "AMG_DEVICE_POOL";
+   char um_pool_name[] = "AMG_UM_POOL";
+   size_t umpire_dev_pool_size = 4294967296; // 4 GiB
+   size_t umpire_um_pool_size = 4294967296; // 4 GiB
+   size_t umpire_dev_block_size = 512;
+   size_t umpire_um_block_size = 512;
+   umpire_resourcemanager umpire_rm;
+   umpire_resourcemanager_get_instance(&umpire_rm);
+   umpire_allocator um_allocator, dev_allocator;
+   /* create device pool */
+   {
+      hypre_int device_id;
+      hypre_GetDevice(&device_id);
+      char resource_name[16];
+      hypre_sprintf(resource_name, "%s::%d", "DEVICE", device_id);
+      umpire_allocator allocator;
+      umpire_resourcemanager_get_allocator_by_name(&umpire_rm, resource_name, &allocator);
+      hypre_umpire_resourcemanager_make_allocator_pool(&umpire_rm, device_pool_name, allocator,
+                                                       umpire_dev_pool_size, umpire_dev_block_size,
+                                                       &dev_allocator);
+   }
+   /* create um pool */
+   {
+      char resource_name[] = "UM";
+      umpire_allocator allocator;
+      umpire_resourcemanager_get_allocator_by_name(&umpire_rm, resource_name, &allocator);
+      hypre_umpire_resourcemanager_make_allocator_pool(&umpire_rm, um_pool_name, allocator,
+                                                       umpire_um_pool_size, umpire_um_block_size,
+                                                       &um_allocator);
+   }
+   /* give hypre the pool names */
+   HYPRE_SetUmpireDevicePoolName(device_pool_name);
+   HYPRE_SetUmpireUMPoolName(um_pool_name);
+   /* allocate and free some GPU memory */
+   HYPRE_Int *tmp_ptr = hypre_TAlloc(HYPRE_Int, umpire_dev_pool_size / 2, memory_location);
+   hypre_TFree(tmp_ptr, memory_location);
+   /* make sure hypre doesn't own the pools */
+   assert(hypre_HandleOwnUmpireUMPool(hypre_handle()) == 0);
+   assert(hypre_HandleOwnUmpireDevicePool(hypre_handle()) == 0);
+#endif
+
    /* default memory location */
    HYPRE_SetMemoryLocation(memory_location);
 
@@ -460,7 +505,7 @@ main( hypre_int argc,
 
    if (problem_id == 2 )
    {
-#ifdef USE_CALIPER     
+#ifdef USE_CALIPER
       adiak_namevalue("Problem", adiak_general, NULL, "%d", 2);
       CALI_MARK_BEGIN("problem");
 #endif
@@ -518,7 +563,7 @@ main( hypre_int argc,
 
       hypre_MPI_Barrier(comm);
       hypre_EndTiming(time_index);
-#ifdef USE_CALIPER      
+#ifdef USE_CALIPER
       CALI_MARK_END("PCG-Setup");
 #endif
       hypre_GetTiming("Problem 2: AMG Setup Time", &wall_time, comm);
@@ -545,7 +590,7 @@ main( hypre_int argc,
 #endif
       time_index = hypre_InitializeTiming("PCG Solve");
       hypre_MPI_Barrier(comm);
-#ifdef USE_CALIPER      
+#ifdef USE_CALIPER
       CALI_MARK_BEGIN("PCG-Solve");
 #endif
       hypre_BeginTiming(time_index);
@@ -555,7 +600,7 @@ main( hypre_int argc,
 
       hypre_MPI_Barrier(comm);
       hypre_EndTiming(time_index);
-#ifdef USE_CALIPER      
+#ifdef USE_CALIPER
       CALI_MARK_END("PCG-Solve");
 #endif
       hypre_GetTiming("Problem 2: AMG-PCG Solve Time", &wall_time, comm);
@@ -588,11 +633,11 @@ main( hypre_int argc,
 #ifdef USE_CALIPER
 	 adiak_namevalue("Solve-FOM", adiak_general, NULL, "%f", FOM2);
 	 adiak_namevalue("Final-FOM", adiak_general, NULL, "%f", FOM1);
-#endif         
+#endif
          hypre_printf ("\n\nFigure of Merit (FOM): nnz_AP / (Setup Phase Time + 3 * Solve Phase Time) %e\n\n", FOM1);
       }
 
-#ifdef USE_CALIPER      
+#ifdef USE_CALIPER
       CALI_MARK_END("calculate-FOM");
       CALI_MARK_END("problem");
 #endif
@@ -607,12 +652,12 @@ main( hypre_int argc,
 #ifdef USE_CALIPER
       adiak_namevalue("Problem", adiak_general, NULL, "%d", 1);
       CALI_MARK_BEGIN("problem");
-#endif  
+#endif
       time_index = hypre_InitializeTiming("GMRES Setup");
       hypre_MPI_Barrier(comm);
-#ifdef USE_CALIPER      
+#ifdef USE_CALIPER
       CALI_MARK_BEGIN("GMRES-Setup");
-#endif      
+#endif
       hypre_BeginTiming(time_index);
 
       HYPRE_ParCSRGMRESCreate(comm, &pcg_solver);
@@ -661,7 +706,7 @@ main( hypre_int argc,
 
       hypre_MPI_Barrier(comm);
       hypre_EndTiming(time_index);
-#ifdef USE_CALIPER      
+#ifdef USE_CALIPER
       CALI_MARK_END("GMRES-Setup");
 #endif
       hypre_GetTiming("Problem 1: AMG Setup Time", &wall_time, comm);
@@ -699,7 +744,7 @@ main( hypre_int argc,
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
       CALI_MARK_END("GMRES-Solve");
-#endif      
+#endif
       hypre_GetTiming("Problem 1: AMG-GMRES Solve Time", &wall_time, comm);
       hypre_FinalizeTiming(time_index);
       hypre_ClearTiming();
@@ -759,6 +804,11 @@ main( hypre_int argc,
 
    /* Finalize hypre */
    HYPRE_Finalize();
+
+#if defined(HYPRE_USING_UMPIRE)
+   umpire_allocator_release(&dev_allocator);
+   umpire_allocator_release(&um_allocator);
+#endif
 
 #ifdef USE_CALIPER
    CALI_MARK_END("main");
