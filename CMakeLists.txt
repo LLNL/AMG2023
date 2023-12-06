@@ -23,6 +23,7 @@ option(AMG_WITH_CUDA "Use CUDA" FALSE)
 option(AMG_WITH_HIP "Use HIP" FALSE)
 option(AMG_WITH_CALIPER "Enable Caliper" FALSE)
 option(AMG_WITH_OMP "Enable OpenMP" FALSE)
+option(AMG_WITH_UMPIRE "Enable Umpire support (requires Umpire support in HYPRE)" FALSE)
 
 find_library(HYPRE_LIBRARIES
     NAMES HYPRE
@@ -87,6 +88,12 @@ if (AMG_WITH_MPI)
   find_package(MPI REQUIRED)
   list(APPEND AMG_DEPENDENCIES
     MPI::MPI_C)
+endif()
+
+if (AMG_WITH_UMPIRE)
+  find_package(umpire REQUIRED)
+  list(APPEND AMG_DEPENDENCIES
+    umpire)
 endif()
 
 configure_file(
