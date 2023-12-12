@@ -522,6 +522,7 @@ main( hypre_int argc,
       HYPRE_PCGSetRelChange(pcg_solver, rel_change);
       HYPRE_PCGSetPrintLevel(pcg_solver, ioutdat);
       HYPRE_PCGSetAbsoluteTol(pcg_solver, atol);
+      HYPRE_PCGSetRecomputeResidual(pcg_solver, 1);
 
       /* use BoomerAMG as preconditioner */
       if (myid == 0 && print_stats) { hypre_printf("Solver: AMG-PCG\n"); }
