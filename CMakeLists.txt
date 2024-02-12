@@ -102,7 +102,7 @@ configure_file(
 )
 
 add_executable(amg amg.c)
-target_link_libraries(amg PUBLIC ${AMG_DEPENDENCIES})
+target_link_libraries(amg PUBLIC ${AMG_DEPENDENCIES} m)
 target_include_directories(amg PUBLIC ${CMAKE_BINARY_DIR})
 
 install(TARGETS amg DESTINATION ${CMAKE_INSTALL_BINDIR})
