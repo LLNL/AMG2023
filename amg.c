@@ -505,6 +505,7 @@ main( hypre_int argc,
    {
 #ifdef USE_CALIPER
       adiak_namevalue("Problem", adiak_general, NULL, "%d", 2);
+      adiak_namevalue("Solver", adiak_general, NULL, "%s", "PCG");
       CALI_MARK_BEGIN("Problem");
 #endif
       time_index = hypre_InitializeTiming("PCG Setup");
@@ -643,6 +644,7 @@ main( hypre_int argc,
    {
 #ifdef USE_CALIPER
       adiak_namevalue("Problem", adiak_general, NULL, "%d", 1);
+      adiak_namevalue("Solver", adiak_general, NULL, "%s", "GMRES");
       CALI_MARK_BEGIN("Problem");
 #endif
       time_index = hypre_InitializeTiming("GMRES Setup");
