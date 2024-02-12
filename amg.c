@@ -898,6 +898,9 @@ BuildIJLaplacian27pt( HYPRE_Int             argc,
     adiak_namevalue("Size-x", adiak_general, NULL, "%d", nx);
     adiak_namevalue("Size-y", adiak_general, NULL, "%d", ny);
     adiak_namevalue("Size-z", adiak_general, NULL, "%d", nz);
+    adiak_namevalue("Px", adiak_general, NULL, "%d", P);
+    adiak_namevalue("Py", adiak_general, NULL, "%d", Q);
+    adiak_namevalue("Pz", adiak_general, NULL, "%d", R);
 #endif
 
    /*-----------------------------------------------------------
