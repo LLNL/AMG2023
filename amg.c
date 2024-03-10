@@ -792,10 +792,10 @@ main( hypre_int argc,
    {
 #if defined(HYPRE_USING_UNIFIED_MEMORY)
       size_t um_hwm = umpire_allocator_get_high_watermark(&um_allocator);
-      printf("UMPIRE UM Pool size %lu GB, high water mark %lu\n", umpire_um_pool_size, um_hwm);
+      printf("UMPIRE UM Pool size %lu bytes, high water mark %lu bytes\n", umpire_um_pool_size, um_hwm);
 #else
       size_t dev_hwm = umpire_allocator_get_high_watermark(&dev_allocator);
-      printf("UMPIRE Device Pool size %lu GB, high water mark %lu\n", umpire_dev_pool_size, dev_hwm);
+      printf("UMPIRE Device Pool size %lu bytes, high water mark %lu bytes\n", umpire_dev_pool_size, dev_hwm);
 #endif
    }
 #endif
