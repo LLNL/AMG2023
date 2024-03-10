@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "HYPRE_config.h"
 #include "_hypre_utilities.h"
 #include "seq_mv.h"
 #include "HYPRE.h"
@@ -142,6 +143,8 @@ main( hypre_int argc,
    HYPRE_Int           spgemm_use_vendor = 1;
 #endif
 #endif
+
+   HYPRE_Int           dev_pool_size = 4, um_pool_size = 4;
 
    /* default execution policy and memory space */
    HYPRE_MemoryLocation memory_location = HYPRE_MEMORY_DEVICE;
@@ -286,6 +289,16 @@ main( hypre_int argc,
          arg_index++;
          relax_type = atoi(argv[arg_index++]);
       }
+      else if ( strcmp(argv[arg_index], "-dev_pool_size") == 0 )
+      {
+         arg_index++;
+         dev_pool_size = atoi(argv[arg_index++]);
+      }
+      else if ( strcmp(argv[arg_index], "-um_pool_size") == 0 )
+      {
+         arg_index++;
+         um_pool_size = atoi(argv[arg_index++]);
+      }
       else
       {
          arg_index++;
@@ -313,6 +326,8 @@ main( hypre_int argc,
       hypre_printf("  -printstats  : prints preconditioning and convergence stats\n");
       hypre_printf("  -printallstats  : prints preconditioning and convergence stats\n");
       hypre_printf("                    including residual norms for each iteration\n");
+      hypre_printf("  -dev_pool_size : size of GPU device memory pool (in GB)\n");
+      hypre_printf("  -um_pool_size : size of GPU UVM memory pool (in GB)\n");
       hypre_printf("\n");
       exit(1);
    }
@@ -356,8 +371,8 @@ main( hypre_int argc,
 #if defined(HYPRE_USING_UMPIRE)
    char device_pool_name[] = "AMG_DEVICE_POOL";
    char um_pool_name[] = "AMG_UM_POOL";
-   size_t umpire_dev_pool_size = 4294967296; // 4 GiB
-   size_t umpire_um_pool_size = 4294967296; // 4 GiB
+   size_t umpire_dev_pool_size = ((size_t) dev_pool_size) * 1024 * 1024 * 1024;
+   size_t umpire_um_pool_size = ((size_t) um_pool_size) * 1024 * 1024 * 1024;
    size_t umpire_dev_block_size = 512;
    size_t umpire_um_block_size = 512;
    umpire_resourcemanager umpire_rm;
@@ -387,8 +402,12 @@ main( hypre_int argc,
    /* give hypre the pool names */
    HYPRE_SetUmpireDevicePoolName(device_pool_name);
    HYPRE_SetUmpireUMPoolName(um_pool_name);
-   /* allocate and free some GPU memory */
-   HYPRE_Int *tmp_ptr = hypre_TAlloc(HYPRE_Int, umpire_dev_pool_size / 2, memory_location);
+   /* allocate and free some memory to make sure pool is allocated */
+#if defined(HYPRE_USING_UNIFIED_MEMORY)
+   char *tmp_ptr = hypre_TAlloc(char, umpire_um_pool_size, memory_location);
+#else
+   char *tmp_ptr = hypre_TAlloc(char, umpire_dev_pool_size, memory_location);
+#endif
    hypre_TFree(tmp_ptr, memory_location);
    /* make sure hypre doesn't own the pools */
    assert(hypre_HandleOwnUmpireUMPool(hypre_handle()) == 0);
@@ -768,6 +787,18 @@ main( hypre_int argc,
 #endif
    }
 
+#if defined(HYPRE_USING_UMPIRE)
+   if (myid == 0)
+   {
+#if defined(HYPRE_USING_UNIFIED_MEMORY)
+      size_t um_hwm = umpire_allocator_get_high_watermark(&um_allocator);
+      printf("UMPIRE UM Pool size %lu GB, high water mark %lu\n", umpire_um_pool_size, um_hwm);
+#else
+      size_t dev_hwm = umpire_allocator_get_high_watermark(&dev_allocator);
+      printf("UMPIRE Device Pool size %lu GB, high water mark %lu\n", umpire_dev_pool_size, dev_hwm);
+#endif
+   }
+#endif
 
    /*-----------------------------------------------------------
     * Print the solution
