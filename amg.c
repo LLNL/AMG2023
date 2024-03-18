@@ -189,6 +189,13 @@ main( hypre_int argc,
    adiak_namevalue("compiler", adiak_general, NULL, "%s", AMG2023_COMPILER_ID);
    adiak_namevalue("compiler version", adiak_general, NULL, "%s", AMG2023_COMPILER_VERSION);
 
+#ifdef HYPRE_RELEASE_VERSION
+   adiak_namevalue("Hypre version", adiak_general, NULL, "%s", HYPRE_RELEASE_VERSION);
+#endif
+#ifdef HYPRE_DEVELOP_STRING
+   adiak_namevalue("Hypre develop", adiak_general, NULL, "%s", HYPRE_DEVELOP_STRING);
+#endif
+
    CALI_MARK_BEGIN("main");
 #endif
 
