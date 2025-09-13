@@ -533,6 +533,9 @@ main( hypre_int argc,
       CALI_MARK_BEGIN("Setup");
 #endif
       hypre_BeginTiming(time_index);
+#ifdef USE_CALIPER
+      CALI_MARK_BEGIN("FOM-Step");
+#endif
       HYPRE_ParCSRPCGCreate(comm, &pcg_solver);
       HYPRE_PCGSetMaxIter(pcg_solver, max_iter);
       HYPRE_PCGSetTol(pcg_solver, tol);
@@ -581,6 +584,9 @@ main( hypre_int argc,
                      (HYPRE_Vector)b, (HYPRE_Vector)x);
 
       hypre_MPI_Barrier(comm);
+#ifdef USE_CALIPER
+      CALI_MARK_END("FOM-Step");
+#endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
       CALI_MARK_END("Setup");
@@ -610,11 +616,17 @@ main( hypre_int argc,
       CALI_MARK_BEGIN("Solve");
 #endif
       hypre_BeginTiming(time_index);
+#ifdef USE_CALIPER
+      CALI_MARK_BEGIN("FOM-Step");
+#endif
 
       HYPRE_PCGSolve(pcg_solver, (HYPRE_Matrix)parcsr_A,
                      (HYPRE_Vector)b, (HYPRE_Vector)x);
 
       hypre_MPI_Barrier(comm);
+#ifdef USE_CALIPER
+      CALI_MARK_END("FOM-Step");
+#endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
       CALI_MARK_END("Solve");
@@ -672,6 +684,9 @@ main( hypre_int argc,
       CALI_MARK_BEGIN("Setup");
 #endif
       hypre_BeginTiming(time_index);
+#ifdef USE_CALIPER
+      CALI_MARK_BEGIN("FOM-Step");
+#endif
 
       HYPRE_ParCSRGMRESCreate(comm, &pcg_solver);
       HYPRE_GMRESSetKDim(pcg_solver, k_dim);
@@ -718,6 +733,9 @@ main( hypre_int argc,
       HYPRE_GMRESSetup (pcg_solver, (HYPRE_Matrix)parcsr_A, (HYPRE_Vector)b, (HYPRE_Vector)x);
 
       hypre_MPI_Barrier(comm);
+#ifdef USE_CALIPER
+      CALI_MARK_END("FOM-Step");
+#endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
       CALI_MARK_END("Setup");
@@ -746,10 +764,16 @@ main( hypre_int argc,
       CALI_MARK_BEGIN("Solve");
 #endif
       hypre_BeginTiming(time_index);
+#ifdef USE_CALIPER
+      CALI_MARK_BEGIN("FOM-Step");
+#endif
 
       HYPRE_GMRESSolve (pcg_solver, (HYPRE_Matrix)parcsr_A, (HYPRE_Vector)b, (HYPRE_Vector)x);
 
       hypre_MPI_Barrier(comm);
+#ifdef USE_CALIPER
+      CALI_MARK_END("FOM-Step");
+#endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
       CALI_MARK_END("Solve");
