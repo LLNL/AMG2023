@@ -534,7 +534,7 @@ main( hypre_int argc,
 #endif
       hypre_BeginTiming(time_index);
 #ifdef USE_CALIPER
-      CALI_MARK_BEGIN("FOM-Step");
+      CALI_MARK_BEGIN("FOMStep");
 #endif
       HYPRE_ParCSRPCGCreate(comm, &pcg_solver);
       HYPRE_PCGSetMaxIter(pcg_solver, max_iter);
@@ -585,7 +585,7 @@ main( hypre_int argc,
 
       hypre_MPI_Barrier(comm);
 #ifdef USE_CALIPER
-      CALI_MARK_END("FOM-Step");
+      CALI_MARK_END("FOMStep");
 #endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
@@ -617,7 +617,7 @@ main( hypre_int argc,
 #endif
       hypre_BeginTiming(time_index);
 #ifdef USE_CALIPER
-      CALI_MARK_BEGIN("FOM-Step");
+      CALI_MARK_BEGIN("FOMStep");
 #endif
 
       HYPRE_PCGSolve(pcg_solver, (HYPRE_Matrix)parcsr_A,
@@ -625,7 +625,7 @@ main( hypre_int argc,
 
       hypre_MPI_Barrier(comm);
 #ifdef USE_CALIPER
-      CALI_MARK_END("FOM-Step");
+      CALI_MARK_END("FOMStep");
 #endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
@@ -685,7 +685,7 @@ main( hypre_int argc,
 #endif
       hypre_BeginTiming(time_index);
 #ifdef USE_CALIPER
-      CALI_MARK_BEGIN("FOM-Step");
+      CALI_MARK_BEGIN("FOMStep");
 #endif
 
       HYPRE_ParCSRGMRESCreate(comm, &pcg_solver);
@@ -734,7 +734,7 @@ main( hypre_int argc,
 
       hypre_MPI_Barrier(comm);
 #ifdef USE_CALIPER
-      CALI_MARK_END("FOM-Step");
+      CALI_MARK_END("FOMStep");
 #endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
@@ -765,14 +765,14 @@ main( hypre_int argc,
 #endif
       hypre_BeginTiming(time_index);
 #ifdef USE_CALIPER
-      CALI_MARK_BEGIN("FOM-Step");
+      CALI_MARK_BEGIN("FOMStep");
 #endif
 
       HYPRE_GMRESSolve (pcg_solver, (HYPRE_Matrix)parcsr_A, (HYPRE_Vector)b, (HYPRE_Vector)x);
 
       hypre_MPI_Barrier(comm);
 #ifdef USE_CALIPER
-      CALI_MARK_END("FOM-Step");
+      CALI_MARK_END("FOMStep");
 #endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
