@@ -51,6 +51,7 @@ if (AMG_WITH_CUDA)
   find_package(CUDAToolkit REQUIRED)
   list(APPEND AMG_DEPENDENCIES
     CUDA::cudart
+    CUDA::cusolver
     CUDA::cublas
     CUDA::cusparse
     CUDA::curand)

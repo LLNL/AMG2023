@@ -357,6 +357,10 @@ main( hypre_int argc,
     * Initialize : must be the first HYPRE function to call
     *-----------------------------------------------------------*/
    HYPRE_Init();
+#if defined(HYPRE_USING_GPU) || defined(HYPRE_USING_DEVICE_OPENMP)
+   HYPRE_DeviceInitialize();
+   HYPRE_PrintDeviceInfo();
+#endif
 
    hypre_EndTiming(time_index);
    hypre_GetTiming("Hypre init times", &wall_time, comm);
@@ -533,9 +537,6 @@ main( hypre_int argc,
       CALI_MARK_BEGIN("Setup");
 #endif
       hypre_BeginTiming(time_index);
-#ifdef USE_CALIPER
-      CALI_MARK_BEGIN("FOMStep");
-#endif
       HYPRE_ParCSRPCGCreate(comm, &pcg_solver);
       HYPRE_PCGSetMaxIter(pcg_solver, max_iter);
       HYPRE_PCGSetTol(pcg_solver, tol);
@@ -584,9 +585,6 @@ main( hypre_int argc,
                      (HYPRE_Vector)b, (HYPRE_Vector)x);
 
       hypre_MPI_Barrier(comm);
-#ifdef USE_CALIPER
-      CALI_MARK_END("FOMStep");
-#endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
       CALI_MARK_END("Setup");
@@ -616,17 +614,11 @@ main( hypre_int argc,
       CALI_MARK_BEGIN("Solve");
 #endif
       hypre_BeginTiming(time_index);
-#ifdef USE_CALIPER
-      CALI_MARK_BEGIN("FOMStep");
-#endif
 
       HYPRE_PCGSolve(pcg_solver, (HYPRE_Matrix)parcsr_A,
                      (HYPRE_Vector)b, (HYPRE_Vector)x);
 
       hypre_MPI_Barrier(comm);
-#ifdef USE_CALIPER
-      CALI_MARK_END("FOMStep");
-#endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
       CALI_MARK_END("Solve");
@@ -684,9 +676,6 @@ main( hypre_int argc,
       CALI_MARK_BEGIN("Setup");
 #endif
       hypre_BeginTiming(time_index);
-#ifdef USE_CALIPER
-      CALI_MARK_BEGIN("FOMStep");
-#endif
 
       HYPRE_ParCSRGMRESCreate(comm, &pcg_solver);
       HYPRE_GMRESSetKDim(pcg_solver, k_dim);
@@ -733,9 +722,6 @@ main( hypre_int argc,
       HYPRE_GMRESSetup (pcg_solver, (HYPRE_Matrix)parcsr_A, (HYPRE_Vector)b, (HYPRE_Vector)x);
 
       hypre_MPI_Barrier(comm);
-#ifdef USE_CALIPER
-      CALI_MARK_END("FOMStep");
-#endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
       CALI_MARK_END("Setup");
@@ -764,16 +750,10 @@ main( hypre_int argc,
       CALI_MARK_BEGIN("Solve");
 #endif
       hypre_BeginTiming(time_index);
-#ifdef USE_CALIPER
-      CALI_MARK_BEGIN("FOMStep");
-#endif
 
       HYPRE_GMRESSolve (pcg_solver, (HYPRE_Matrix)parcsr_A, (HYPRE_Vector)b, (HYPRE_Vector)x);
 
       hypre_MPI_Barrier(comm);
-#ifdef USE_CALIPER
-      CALI_MARK_END("FOMStep");
-#endif
       hypre_EndTiming(time_index);
 #ifdef USE_CALIPER
       CALI_MARK_END("Solve");
