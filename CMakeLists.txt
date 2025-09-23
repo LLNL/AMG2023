@@ -70,6 +70,7 @@ if (AMG_WITH_HIP)
 endif()
 
 if (AMG_WITH_CALIPER)
+  enable_language(CXX)
   find_package(caliper REQUIRED)
   list(APPEND AMG_DEPENDENCIES 
     caliper)
@@ -92,6 +93,7 @@ if (AMG_WITH_MPI)
 endif()
 
 if (AMG_WITH_UMPIRE)
+  enable_language(CXX)
   find_package(umpire REQUIRED)
   list(APPEND AMG_DEPENDENCIES
     umpire)
@@ -103,8 +105,8 @@ configure_file(
 )
 
 add_executable(amg amg.c)
-set_target_properties(amg PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(amg PUBLIC ${AMG_DEPENDENCIES} m)
 target_include_directories(amg PUBLIC ${CMAKE_BINARY_DIR})
+set_target_properties(amg PROPERTIES LINKER_LANGUAGE CXX)
 
 install(TARGETS amg DESTINATION ${CMAKE_INSTALL_BINDIR})
