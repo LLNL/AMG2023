@@ -103,7 +103,7 @@ configure_file(
 )
 
 add_executable(amg amg.c)
-set_target_properties(myprog PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(amg PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(amg PUBLIC ${AMG_DEPENDENCIES} m)
 target_include_directories(amg PUBLIC ${CMAKE_BINARY_DIR})
 
