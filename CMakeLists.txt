@@ -104,6 +104,7 @@ configure_file(
   "${CMAKE_BINARY_DIR}/amg-config.h"
 )
 
+enable_language(CXX)
 add_executable(amg amg.c)
 target_link_libraries(amg PUBLIC ${AMG_DEPENDENCIES} m)
 target_include_directories(amg PUBLIC ${CMAKE_BINARY_DIR})
