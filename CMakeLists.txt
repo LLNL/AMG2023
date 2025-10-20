@@ -58,7 +58,6 @@ if (AMG_WITH_CUDA)
 endif()
 
 if (AMG_WITH_HIP)
-  enable_language(CXX)
   find_package(hip REQUIRED)
   find_package(rocsparse REQUIRED)
   find_package(rocrand REQUIRED)
@@ -70,7 +69,6 @@ if (AMG_WITH_HIP)
 endif()
 
 if (AMG_WITH_CALIPER)
-  enable_language(CXX)
   find_package(caliper REQUIRED)
   list(APPEND AMG_DEPENDENCIES 
     caliper)
@@ -93,7 +91,6 @@ if (AMG_WITH_MPI)
 endif()
 
 if (AMG_WITH_UMPIRE)
-  enable_language(CXX)
   find_package(umpire REQUIRED)
   list(APPEND AMG_DEPENDENCIES
     umpire)
