@@ -357,6 +357,10 @@ main( hypre_int argc,
     * Initialize : must be the first HYPRE function to call
     *-----------------------------------------------------------*/
    HYPRE_Init();
+#if defined(HYPRE_USING_GPU) || defined(HYPRE_USING_DEVICE_OPENMP)
+   HYPRE_DeviceInitialize();
+   HYPRE_PrintDeviceInfo();
+#endif
 
    hypre_EndTiming(time_index);
    hypre_GetTiming("Hypre init times", &wall_time, comm);

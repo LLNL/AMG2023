@@ -51,13 +51,13 @@ if (AMG_WITH_CUDA)
   find_package(CUDAToolkit REQUIRED)
   list(APPEND AMG_DEPENDENCIES
     CUDA::cudart
+    CUDA::cusolver
     CUDA::cublas
     CUDA::cusparse
     CUDA::curand)
 endif()
 
 if (AMG_WITH_HIP)
-  enable_language(CXX)
   find_package(hip REQUIRED)
   find_package(rocsparse REQUIRED)
   find_package(rocrand REQUIRED)
@@ -101,8 +101,10 @@ configure_file(
   "${CMAKE_BINARY_DIR}/amg-config.h"
 )
 
+enable_language(CXX)
 add_executable(amg amg.c)
 target_link_libraries(amg PUBLIC ${AMG_DEPENDENCIES} m)
 target_include_directories(amg PUBLIC ${CMAKE_BINARY_DIR})
+set_target_properties(amg PROPERTIES LINKER_LANGUAGE CXX)
 
 install(TARGETS amg DESTINATION ${CMAKE_INSTALL_BINDIR})
